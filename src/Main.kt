@@ -1,6 +1,11 @@
 import java.text.NumberFormat
 import java.util.Locale
 
+// Deklarasi konstanta warna ANSI di luar class agar mudah dipanggil
+const val ANSI_RESET = "\u001B[0m"
+const val ANSI_RED = "\u001B[31m"
+const val ANSI_GREEN = "\u001B[32m"
+
 fun Int.formatRupiah(): String {
     val localeID = Locale("in", "ID")
     val formatter = NumberFormat.getNumberInstance(localeID)
@@ -46,19 +51,22 @@ class Kasir(val nama: String) {
 
         val totalHarga = barang.harga * jumlahBeli
 
+        // [GAGAL] Warna Merah
         if (barang.stok < jumlahBeli) {
-            println("[GAGAL] Stok ${barang.nama} tidak mencukupi. Sisa stok: ${barang.stok}")
+            println("${ANSI_RED}[GAGAL] Stok ${barang.nama} tidak mencukupi. Sisa stok: ${barang.stok}${ANSI_RESET}")
             return
         }
 
+        // [GAGAL] Warna Merah
         if (pembeli.uangTunai < totalHarga) {
-            println("[GAGAL] Uang tunai ${pembeli.nama} kurang. Total tagihan: ${totalHarga.formatRupiah()}, Uang: ${pembeli.uangTunai.formatRupiah()}")
+            println("${ANSI_RED}[GAGAL] Uang tunai ${pembeli.nama} kurang. Total tagihan: ${totalHarga.formatRupiah()}, Uang: ${pembeli.uangTunai.formatRupiah()}${ANSI_RESET}")
             return
         }
 
+        // [SUKSES] Warna Hijau
         if (barang.kurangiStok(jumlahBeli) && pembeli.bayar(totalHarga)) {
             pembeli.tambahPoin(10)
-            println("[SUKSES] Transaksi berhasil diproses!")
+            println("${ANSI_GREEN}[SUKSES] Transaksi berhasil diproses!${ANSI_RESET}")
             println("Sisa Uang  : ${pembeli.uangTunai.formatRupiah()}")
             println("Poin Member: ${pembeli.poinMember} Poin")
             println("Sisa Stok  : ${barang.stok} unit")
@@ -67,7 +75,6 @@ class Kasir(val nama: String) {
 }
 
 fun main() {
-    // Nama Kasir dan Pembeli sudah diperbarui
     val kasir1 = Kasir("Vera")
     val pembeli1 = Pembeli("Andi", 50000)
 
@@ -81,4 +88,4 @@ fun main() {
     kasir1.prosesTransaksi(pembeli1, barang2, 1)
     kasir1.prosesTransaksi(pembeli1, barang1, 1)
     kasir1.prosesTransaksi(pembeli1, barang1, 1)
-}
+}+
